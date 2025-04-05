@@ -6,8 +6,8 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--no-audit --no-optional"
 
-[[plugins]]
-  package = "@netlify/plugin-cache"
+[build.processing]
+  skip_processing = true
 
 [[redirects]]
   from = "/*"
