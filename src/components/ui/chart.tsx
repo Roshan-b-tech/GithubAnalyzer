@@ -1,8 +1,5 @@
 import * as React from 'react';
 import * as RechartsPrimitive from 'recharts';
-import {
-  Payload,
-} from 'recharts/types/component/DefaultTooltipContent';
 
 import { cn } from '@/lib/utils';
 
