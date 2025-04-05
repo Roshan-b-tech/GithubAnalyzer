@@ -1,0 +1,16 @@
+[build]
+  command = "npm install && npm run lint && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--no-audit --no-optional"
+  CI = "true"
+
+[build.processing]
+  skip_processing = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
