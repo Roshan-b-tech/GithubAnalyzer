@@ -68,6 +68,38 @@ npm run dev
    - `repo`
 4. Copy the generated token and add it to your `.env` file
 
+## Environment Setup
+
+1. Create a GitHub Personal Access Token:
+
+   - Go to GitHub.com → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Click "Generate new token (classic)"
+   - Give it a descriptive name (e.g., "GitHub Profile Analyzer Local")
+   - Select these scopes:
+     - `read:user`
+     - `repo`
+   - Set an expiration date (recommended: 30 days)
+   - Copy your token (you won't see it again!)
+
+2. Set up environment variables:
+
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+
+   # Edit .env and add your token
+   # Replace 'your_github_token_here' with your actual token
+   ```
+
+⚠️ IMPORTANT: Security Notes
+
+- NEVER commit your `.env` file
+- NEVER share your token with anyone
+- If you accidentally expose your token:
+  1. Immediately go to GitHub and revoke it
+  2. Generate a new token
+  3. Update your local `.env` file
+
 ## Usage
 
 1. Enter a GitHub username in the search field
