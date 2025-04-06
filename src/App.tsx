@@ -237,45 +237,49 @@ function App() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <div className={`flex flex-col justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} py-2 h-full`}>
-                      {['Mon', '', 'Wed', '', 'Fri', ''].map((day) => (
-                        <span key={day} className="h-3 leading-3">{day}</span>
-                      ))}
-                    </div>
-                    <div className="flex-1">
-                      <div className={`flex justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mb-2`}>
-                        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
-                          <span key={index}>{month}</span>
-                        ))}
-                      </div>
-                      <div className="inline-flex gap-[3px]">
-                        {contributionMatrix.map((week, weekIndex) => (
-                          <div key={weekIndex} className="flex flex-col gap-[3px]">
-                            {week.map((day, dayIndex) => (
-                              <TooltipProvider key={`${weekIndex}-${dayIndex}`}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <motion.div
-                                      initial={{ scale: 0.8 }}
-                                      animate={{ scale: 1 }}
-                                      transition={{ duration: 0.2 }}
-                                      className={`w-[10px] h-[10px] rounded-[2px] ${getCommitIntensity(day?.contributionCount || 0)}`}
-                                    />
-                                  </TooltipTrigger>
-                                  <TooltipContent className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-[#161b22] border-[#2d333b] text-white'}`}>
-                                    <p className="font-medium">
-                                      {day?.contributionCount || 0} contributions
-                                    </p>
-                                    <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}>
-                                      {day ? formatDate(day.date) : 'No contributions'}
-                                    </p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                  <div className="overflow-x-auto -mx-4 px-4">
+                    <div className="min-w-[750px]">
+                      <div className="flex gap-4">
+                        <div className={`flex flex-col justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} py-2 h-full`}>
+                          {['Mon', '', 'Wed', '', 'Fri', ''].map((day) => (
+                            <span key={day} className="h-3 leading-3">{day}</span>
+                          ))}
+                        </div>
+                        <div className="flex-1">
+                          <div className={`flex justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mb-2`}>
+                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
+                              <span key={index}>{month}</span>
                             ))}
                           </div>
-                        ))}
+                          <div className="inline-flex gap-[3px]">
+                            {contributionMatrix.map((week, weekIndex) => (
+                              <div key={weekIndex} className="flex flex-col gap-[3px]">
+                                {week.map((day, dayIndex) => (
+                                  <TooltipProvider key={`${weekIndex}-${dayIndex}`}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <motion.div
+                                          initial={{ scale: 0.8 }}
+                                          animate={{ scale: 1 }}
+                                          transition={{ duration: 0.2 }}
+                                          className={`w-[10px] h-[10px] rounded-[2px] ${getCommitIntensity(day?.contributionCount || 0)}`}
+                                        />
+                                      </TooltipTrigger>
+                                      <TooltipContent className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-[#161b22] border-[#2d333b] text-white'}`}>
+                                        <p className="font-medium">
+                                          {day?.contributionCount || 0} contributions
+                                        </p>
+                                        <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}>
+                                          {day ? formatDate(day.date) : 'No contributions'}
+                                        </p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
