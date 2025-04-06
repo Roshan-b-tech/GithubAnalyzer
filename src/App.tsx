@@ -131,20 +131,77 @@ function App() {
     const matrix: ContributionDay[][] = Array(52).fill(null).map(() => Array(7).fill(null));
     const today = new Date();
     const oneYearAgo = new Date(today);
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    oneYearAgo.setDate(today.getDate() - 364); // Exactly 364 days ago (to make 365 with today)
 
-    contributionData.forEach((day) => {
-      const date = new Date(day.date);
-      if (date >= oneYearAgo && date <= today) {
-        const weekIndex = Math.floor((today.getTime() - date.getTime()) / (7 * 24 * 60 * 60 * 1000));
-        const dayIndex = date.getDay();
-        if (weekIndex < 52) {
-          matrix[51 - weekIndex][dayIndex] = day;
-        }
-      }
+    // Create a map of all dates in the last year
+    const dateMap = new Map();
+    contributionData.forEach(day => {
+      dateMap.set(day.date, day);
     });
 
+    // Fill the matrix starting from today and going backwards
+    let currentDate = new Date(today);
+    let weekIndex = 51; // Start from the rightmost column
+    
+    // Adjust currentDate to the start of the week (Sunday)
+    const daysSinceMonday = (currentDate.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+    currentDate.setDate(currentDate.getDate() - daysSinceMonday);
+    
+    while (weekIndex >= 0) {
+      for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        const contribution = dateMap.get(dateStr);
+        
+        if (currentDate >= oneYearAgo && currentDate <= today) {
+          matrix[weekIndex][dayIndex] = contribution || {
+            contributionCount: 0,
+            date: dateStr
+          };
+        }
+        
+        currentDate.setDate(currentDate.getDate() - 1);
+      }
+      weekIndex--;
+    }
+
     return matrix;
+  };
+
+  const getMonthLabels = () => {
+    const labels = [];
+    const today = new Date();
+    const date = new Date(today);
+    
+    // Adjust to the start of the week
+    const daysSinceMonday = (date.getDay() + 6) % 7;
+    date.setDate(date.getDate() - daysSinceMonday);
+    
+    // Move back 51 weeks to start from the beginning
+    date.setDate(date.getDate() - (51 * 7));
+    
+    // Get months by moving through weeks
+    const seenMonths = new Set();
+    for (let week = 0; week < 52; week++) {
+      const monthName = date.toLocaleString('en-US', { month: 'short' });
+      if (!seenMonths.has(monthName)) {
+        labels.push(monthName);
+        seenMonths.add(monthName);
+      }
+      date.setDate(date.getDate() + 7);
+    }
+
+    // Ensure we have the current month
+    const currentMonth = today.toLocaleString('en-US', { month: 'short' });
+    if (!seenMonths.has(currentMonth)) {
+      labels[labels.length - 1] = currentMonth;
+    }
+
+    // Pad to 12 months if needed
+    while (labels.length < 12) {
+      labels.push('');
+    }
+
+    return labels;
   };
 
   const formatDate = (date: string) => {
@@ -156,6 +213,7 @@ function App() {
   };
 
   const contributionMatrix = getContributionMatrix();
+  const monthLabels = getMonthLabels();
 
   return (
     <div className={`min-h-screen p-8 ${theme === 'dark' ? 'bg-[#0d1117]' : 'bg-gradient-to-r from-white to-emerald-100'}`}>
@@ -239,21 +297,21 @@ function App() {
                 <div className="space-y-4">
                   <div className="overflow-x-auto -mx-4 px-4">
                     <div className="min-w-[750px]">
-                      <div className="flex gap-4">
-                        <div className={`flex flex-col justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} py-2 h-full`}>
+                      <div className="flex gap-2">
+                        <div className={`flex flex-col justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} py-2`}>
                           {['Mon', '', 'Wed', '', 'Fri', ''].map((day) => (
                             <span key={day} className="h-3 leading-3">{day}</span>
                           ))}
                         </div>
                         <div className="flex-1">
-                          <div className={`flex justify-between text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mb-2`}>
-                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
-                              <span key={index}>{month}</span>
+                          <div className={`grid grid-cols-12 text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mb-2`}>
+                            {monthLabels.map((month, index) => (
+                              <span key={index} className="text-center">{month}</span>
                             ))}
                           </div>
-                          <div className="inline-flex gap-[3px]">
+                          <div className="flex gap-[2px] w-full justify-between">
                             {contributionMatrix.map((week, weekIndex) => (
-                              <div key={weekIndex} className="flex flex-col gap-[3px]">
+                              <div key={weekIndex} className="flex flex-col gap-[2px]">
                                 {week.map((day, dayIndex) => (
                                   <TooltipProvider key={`${weekIndex}-${dayIndex}`}>
                                     <Tooltip>

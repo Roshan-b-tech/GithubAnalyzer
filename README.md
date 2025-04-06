@@ -1,5 +1,7 @@
 # GitHub Profile Analyzer
 
+🚀 **Live Link**: [https://useranalyzer.netlify.app/](https://useranalyzer.netlify.app/)
+
 A modern web application that visualizes GitHub user profiles and their activity metrics. Built with React, TypeScript, and ShadcnUI.
 
 ![GitHub Profile Analyzer](screenshot.png)
